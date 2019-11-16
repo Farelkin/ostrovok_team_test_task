@@ -3,7 +3,6 @@
 
 from bs4 import BeautifulSoup
 from datetime import datetime
-from pprint import pprint
 import requests
 import shutil
 import re
@@ -28,7 +27,8 @@ def give_user_image(users_date, users_size):
             if r.status_code == 404:
                 break
         else:
-            r = requests.get(url_magazine.format(f'/category/wallpapers/page/{i}'),
+            r = requests.get(url_magazine
+                             .format(f'/category/wallpapers/page/{i}'),
                              verify=False)
             if r.status_code == 404:
                 break
@@ -51,7 +51,7 @@ def give_user_image(users_date, users_size):
                 .a['href']
 
             find_size_and_download_img(link_featured, users_size)
-            print(f'link_featured = {link_featured}')
+
         # ------------ find date and links from articles ------------
         articles = soup.find_all('article', class_='article--post')
 
@@ -68,7 +68,6 @@ def give_user_image(users_date, users_size):
                                         .attrs['href']
 
                 find_size_and_download_img(links_from_articles, users_size)
-                print(f'links_from_articles = {links_from_articles}')
 
 
 def find_size_and_download_img(link, users_size):
@@ -87,7 +86,6 @@ def find_size_and_download_img(link, users_size):
     for link_from_tag_a in tag_a:
         if users_size in link_from_tag_a:
             download_links.append(link_from_tag_a.attrs['href'])
-    pprint(download_links)
 
     # ------------ download images -------------------
     for img_link in download_links:
