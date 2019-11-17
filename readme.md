@@ -6,15 +6,15 @@
 <br>
 
 <code>
-postgres=# \d employee
+postgres=# \d employee <br>
             Table "public.employee"
    Column   |         Type          | Modifiers
 ------------+-----------------------+-----------
  id         | integer               | not null
  name       | character varying(30) |
  department | character varying(30) |
- salary     | integer               |
-Indexes:
+ salary     | integer               |<br>
+Indexes:<br>
     "employee_pkey" PRIMARY KEY, btree (id)
 </code>
     
