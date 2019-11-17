@@ -5,18 +5,18 @@
 В качестве тестовых данных можете использовать дамп таблицы, пример схемы: 
 <br>
 
-<code>
-postgres=# \d employee <br>
+<pre>
+postgres=# \d employee 
             Table "public.employee"
    Column   |         Type          | Modifiers
 ------------+-----------------------+-----------
  id         | integer               | not null
  name       | character varying(30) |
  department | character varying(30) |
- salary     | integer               |<br>
-Indexes:<br>
+ salary     | integer               |
+Indexes:
     "employee_pkey" PRIMARY KEY, btree (id)
-</code>
+</pre>
     
 <h3>Инструкция как пользоваться программой:</h3>
 Перед запуском необходимо убедится, что файл "secrets.json" находится в той же 
@@ -36,9 +36,9 @@ Indexes:<br>
 "Python3 ex2.py"
 
 Примеры ввода: <br>
-<code>
+<pre>
 run
 09-2015
 640x480
-</code>
+</pre>
 
