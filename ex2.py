@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-from datetime import datetime
 import requests
 import shutil
 import re
 import click
+from bs4 import BeautifulSoup
+from datetime import datetime
+
 
 url_magazine = 'https://www.smashingmagazine.com{}'
 
 
-def give_user_image(users_date, users_size):
+def get_user_image_link(users_date, users_size):
     """
     The function by dates finds links to articles with wallpapers
     :param users_date: users date input
@@ -22,50 +22,50 @@ def give_user_image(users_date, users_size):
     i = 1
     while True:
         if i == 1:
-            r = requests.get(url_magazine.format('/category/wallpapers/'),
-                             verify=False)
-            if r.status_code == 404:
+            r = requests.get(
+                url_magazine.format('/category/wallpapers/'), verify=False)
+            if r.status_code == 200:
+                i += 1
+            else:
                 break
         else:
-            r = requests.get(url_magazine
-                             .format(f'/category/wallpapers/page/{i}'),
-                             verify=False)
-            if r.status_code == 404:
+            r = requests.get(
+                url_magazine.format(f'/category/wallpapers/page/{i}'),
+                verify=False)
+            if r.status_code == 200:
+                i += 1
+            else:
                 break
-        i += 1
 
         soup = BeautifulSoup(r.text, 'html.parser')
 
-        # -------------------- find first block --------------------
+        # find first block
         div_featured = soup.find('div',
                                  class_='tilted-featured-article__content')
 
-        # -------------- find date in the first block --------------
+        # find date in the first block
         date_featured = div_featured.find('time').attrs['datetime']
-        date_featured = datetime.strptime(date_featured[:7], '%Y-%m') \
-            .date().strftime('%Y-%m')
+        date_featured = datetime.strptime(
+            date_featured[:7], '%Y-%m').date().strftime('%Y-%m')
 
         if users_date == date_featured:
-            link_featured = div_featured \
-                .find('h2', class_='tilted-featured-article__title') \
-                .a['href']
+            link_featured = div_featured.find(
+                'h2', class_='tilted-featured-article__title').a['href']
 
             find_size_and_download_img(link_featured, users_size)
 
-        # ------------ find date and links from articles ------------
+        # find date and links from articles
         articles = soup.find_all('article', class_='article--post')
 
+        # Need to change date format from YYYY-MM-DD to YYYY-MM that's why [:7]
         for tag in articles:
-            date_from_articles = datetime \
-                .strptime(tag.find('time')
-                             .attrs['datetime'][:7], '%Y-%m')\
-                .date().strftime('%Y-%m')
-
+            date_from_articles = datetime.strptime(
+                tag.find('time').attrs['datetime'][:7],
+                '%Y-%m'
+            ).date().strftime('%Y-%m')
             if users_date in date_from_articles:
-                links_from_articles = tag\
-                                        .find('h1', class_='article--post__title')\
-                                        .find('a')\
-                                        .attrs['href']
+                links_from_articles = tag.find(
+                    'h1', class_='article--post__title').find('a').attrs['href']
 
                 find_size_and_download_img(links_from_articles, users_size)
 
@@ -87,7 +87,7 @@ def find_size_and_download_img(link, users_size):
         if users_size in link_from_tag_a:
             download_links.append(link_from_tag_a.attrs['href'])
 
-    # ------------ download images -------------------
+    # download images
     for img_link in download_links:
         response = requests.get(img_link, stream=True)
         img_link_split = img_link.split('/')[-1]
@@ -109,21 +109,21 @@ def main():
             try:
                 date = datetime.strptime(date, '%m-%Y').date()\
                                                        .strftime('%Y-%m')
-            except Exception:
-                print('Wrong format. Try again')
+            except ValueError:
+                print('Wrong date format. Try again')
                 continue
 
             try:
                 size = input('Enter image size, for example 640x480: ')
                 regular_ex = re.search(r'[\d{3}x\d{3}|\d{4}x\d{4}]', size)
-                print(regular_ex)
+
                 if regular_ex is None:
-                    raise Exception
-            except Exception:
-                print('Wrong format. Try again')
+                    raise ValueError
+            except ValueError:
+                print('Wrong size format. Try again')
                 continue
 
-            give_user_image(date, size)
+            get_user_image_link(date, size)
         else:
             print('Wrong enter')
             continue
