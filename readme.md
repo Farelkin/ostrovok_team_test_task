@@ -4,6 +4,7 @@
 человека с максимальной зарплатой из каждого отдела.
 В качестве тестовых данных можете использовать дамп таблицы, пример схемы:
 
+<code>
 postgres=# \d employee
             Table "public.employee"
    Column   |         Type          | Modifiers
@@ -14,6 +15,7 @@ postgres=# \d employee
  salary     | integer               |
 Indexes:
     "employee_pkey" PRIMARY KEY, btree (id)
+</code>
     
 <h3>Инструкция как пользоваться программой:</h3>
 Перед запуском необходимо убедится, что файл "secrets.json" находится в той же 
